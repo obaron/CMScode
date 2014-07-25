@@ -90,9 +90,9 @@ public:
 	float jtmass[1000];
 	float trackMax[1000];
 	float chargedMax[1000];
-        float neutralMax[1000];
-  float chargedSum[1000];
-  float neutralSum[1000];
+    float neutralMax[1000];
+    float chargedSum[1000];
+    float neutralSum[1000];
 	float genpt[1000];
 	int gensubid[1000];
 	float vz;
@@ -245,9 +245,13 @@ void RAA_pp_mc(int radius = 7, char *algo = "Pu"){
   for (int i=0;i<nbinsPP_pthat;i++) {
     if (xsectionPP[i]==0) continue;
     //float scale=(xsectionPP[i]-xsectionPP[i+1])/dataPP[i]->tJet->GetEntries(Form("pthat>%.0f&&pthat<%.0f",boundariesPP_pthat[i],boundariesPP_pthat[i+1])); 
-    cout <<"Loading PP pthat"<<boundariesPP_pthat[i]
+    double nevts = dataPP[i]->tJet->GetEntries();
+	double nents = (1./nevts);
+	cout <<"Loading PP pthat"<<boundariesPP_pthat[i]
 	 <<" sample, cross section = "<<xsectionPP[i]
 	 << Form(" pthat>%.0f&&pthat<%.0f",boundariesPP_pthat[i],boundariesPP_pthat[i+1])<<endl;
+	cout <<"Number of events(nevts): "<<nevts<<endl;
+	
     //cout<<""<<endl;
     for (Long64_t jentry2=0; jentry2<dataPP[i]->tJet->GetEntries();jentry2++) {
       //for (Long64_t jentry2=0; jentry2<10;jentry2++) {
@@ -256,9 +260,6 @@ void RAA_pp_mc(int radius = 7, char *algo = "Pu"){
       //dataPP[i]->tGenJet->GetEntry(jentry2);
       //if(dataPP[i]->pthat<boundariesPP_pthat[i] || dataPP[i]->pthat>boundariesPP_pthat[i+1]) continue;
       //if(dataPP[i]->bin<=28) continue;
-	  
-	double nevts = dataPP[i]->tJet->GetEntries();
-	double nents = (1./nevts);
 	  
       int pthatBin = hPtHatPP->FindBin(dataPP[i]->pthat);
 	  //cout<< fileNamePP_pthat[i]<<endl; //DEBUGGING PURPOSES ONLY
@@ -315,11 +316,6 @@ void RAA_pp_mc(int radius = 7, char *algo = "Pu"){
     hpp_matrix->GetYaxis()->SetTitle("Raw p_{T}");
     hpp_matrix->GetYaxis()->CenterTitle();
 
-    hpp_gen->GetXaxis()->SetTitle("Ref p_{T}");
-    hpp_gen->GetXaxis()->CenterTitle();
-    hpp_gen->GetYaxis()->SetTitle("Events");
-    hpp_gen->GetYaxis()->CenterTitle();
-  
     hpp_reco->GetXaxis()->SetTitle("Reco p_{T}");
     hpp_reco->GetXaxis()->CenterTitle();
     hpp_reco->GetYaxis()->SetTitle("Events");
@@ -329,12 +325,7 @@ void RAA_pp_mc(int radius = 7, char *algo = "Pu"){
     hpp_raw->GetXaxis()->CenterTitle();
     hpp_raw->GetYaxis()->SetTitle("Events");
     hpp_raw->GetYaxis()->CenterTitle();
-  
-    hpp_gen->GetXaxis()->SetTitle("Gen Ref p_{T}");
-    hpp_gen->GetXaxis()->CenterTitle();
-    hpp_gen->GetYaxis()->SetTitle("Events");
-    hpp_gen->GetYaxis()->CenterTitle();
-  
+   
     hpp_eta->GetXaxis()->SetTitle("Eta");
     hpp_eta->GetXaxis()->CenterTitle();
   
@@ -386,7 +377,7 @@ void RAA_pp_mc(int radius = 7, char *algo = "Pu"){
   hpp_eta->Draw();
 
   TCanvas *c7=new TCanvas();
-  c7.cd();
+  c7->cd();
   hpp_phi->GetYaxis()->SetRangeUser(0,2);
   hpp_phi->Draw();
   
