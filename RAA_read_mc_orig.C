@@ -65,6 +65,7 @@ static const double boundaries_pt[nbins_pt+1] = {
   638, 686, 1000 
 };
 
+
 static const int nbins_eta = 10;
 static const double boundaries_eta[nbins_eta][2] = {
   {-1.0,+1.0},
@@ -647,7 +648,7 @@ void RAA_read_mc_orig(char *algo = "Pu"){
 
         for (int g = 0; g < data[k][h]->njets; g++) {
   
-		//Should filling pbpb eta/phi go here??
+
   
   
           for(int j = 0;j<nbins_eta;j++){
@@ -695,7 +696,21 @@ void RAA_read_mc_orig(char *algo = "Pu"){
 	    //uhist[cBin]-> hMeasJECSys->Fill(data[h]->jtpt[k]*(1.+0.02/nbins_cent*(nbins_cent-i)),scale*weight_cent*weight_pt*weight_vz); 
 	
 	  }// eta bins loop
-	      
+	      		  
+				  		//Should filling pbpb eta/phi go here?? if not, maybe move them outside of [h] loop
+		
+		//cout<<"line before filling"<<endl;
+		
+		//hpbpb_etadist[k][nbins_cent]->Fill(data[k][h]->jteta[g]);
+		//hpbpb_phidist[k][nbins_cent]->Fill(data[k][h]->jtphi[g]);
+		
+		//cout<<"next line!"<<endl;
+		
+		hpbpb_etadist[k][cBin]->Fill(data[k][h]->jteta[g]);
+		hpbpb_phidist[k][cBin]->Fill(data[k][h]->jtphi[g]);		
+		
+		//cout<<"third line!"<<endl;
+		
         }//njets loop
       
       }//nentry loop
@@ -853,6 +868,14 @@ void RAA_read_mc_orig(char *algo = "Pu"){
     }//eta loop
     //just the check the Pthat distributions for PbPb and pp. should be fine. 
 
+	//second cent. loop
+	 for(int i = 0;i<=nbins_cent;i++){
+	 hpbpb_etadist[k][i]->Write();
+	 hpbpb_etadist[k][i]->Print("base");
+	 hpbpb_phidist[k][i]->Write();
+	 hpbpb_phidist[k][i]->Print("base");
+	 }
+	
     hCentMC[k]->Print("base");
     hCentMC[k]->Write();
     hPtHat[k]->Print("base");
