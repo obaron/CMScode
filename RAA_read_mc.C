@@ -763,13 +763,13 @@ void RAA_read_mc(char *algo = "Vs", char *jet_type = "Calo"){
 		
 		//cout<<"line before filling"<<endl;
 		
-		hpbpb_etadist[k][nbins_cent]->Fill(data[k][h]->jteta[g]);
-		hpbpb_phidist[k][nbins_cent]->Fill(data[k][h]->jtphi[g]);
+		hpbpb_etadist[k][nbins_cent]->Fill(data[k][h]->jteta[g],scale*weight_vz);
+		hpbpb_phidist[k][nbins_cent]->Fill(data[k][h]->jtphi[g],scale*weight_vz);
 		
 		//cout<<"next line!"<<endl;
 		
-		hpbpb_etadist[k][cBin]->Fill(data[k][h]->jteta[g]);
-		hpbpb_phidist[k][cBin]->Fill(data[k][h]->jtphi[g]);		
+		hpbpb_etadist[k][cBin]->Fill(data[k][h]->jteta[g],scale*weight_vz);
+		hpbpb_phidist[k][cBin]->Fill(data[k][h]->jtphi[g],scale*weight_vz);		
 		
 		//cout<<"third line!"<<endl;
 		
@@ -848,8 +848,8 @@ void RAA_read_mc(char *algo = "Vs", char *jet_type = "Calo"){
         for (int g= 0; g< dataPP[k][h]->njets; g++) { 
 
 			//ETA AND PHI HISTOS, LOCATED BEFORE ETA CUT
-			hpp_etadist[k]->Fill(dataPP[k][h]->jteta[g]);
-			hpp_phidist[k]->Fill(dataPP[k][h]->jtphi[g]);
+			hpp_etadist[k]->Fill(dataPP[k][h]->jteta[g],scalepp*weight_vz);
+			hpp_phidist[k]->Fill(dataPP[k][h]->jtphi[g],scalepp*weight_vz);
           for(int j = 0;j<nbins_eta;j++){
             
             int subEvt=-1;
