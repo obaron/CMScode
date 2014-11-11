@@ -46,10 +46,10 @@
 #include <TCut.h>
 #include <cstdlib>
 #include <cmath>
-#include <TLegend.h>
-#include <TLatex.h>
-#include <TMath.h>
-#include <TLine.h>
+#include "TLegend.h"
+#include "TLatex.h"
+#include "TMath.h"
+#include "TLine.h"
 
   
 //static const int nbins_pt = 29; //old bins with slight difference in the low and high pt ranges. 
@@ -476,7 +476,6 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
   
   //Power Law Fit
   TH1F *hpp_genratio[no_radius][nbins_eta];
-  TH1F *hpp_genfunc[no_radius][nbins_eta];
   TCanvas *tppGenfunc[no_radius][nbins_eta];
   TCanvas *tppGenrat[no_radius][nbins_eta];
   TF1 *fppgen[no_radius][nbins_eta];
@@ -572,7 +571,6 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
       hpp_logmat[k][j] = new TH2F(Form("hpp_logmatrix_R%d_%s",list_radius[k],etaWidth[j]),Form("matrix log scale refpt jtpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt,nbins_pt,boundaries_pt);
 
 	  hpp_genratio[k][j] = new TH1F(Form("hpp_genratio_R%d_%s",list_radius[k],etaWidth[j]),Form("genratio refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
-	  hpp_genfunc[k][j] = new TH1F(Form("hpp_genfunc_R%d_%s",list_radius[k],etaWidth[j]),Form("genfunc refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
 	  fppgen[k][j] = new TF1(Form("fppgen_%d_%s",list_radius[k],etaWidth[j]),"[0]*pow(x+[2],[1])");
 	  
 	  hpp_recoratio[k][j] = new TH1F(Form("hpp_recoratio_R%d_%s",list_radius[k],etaWidth[j]),Form("recoratio jtpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
@@ -1135,38 +1133,67 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
       hpp_mcclosure_data[k][j]->Print("base");
 
 	 //Let's do a power law fit here for pp:
-
+	 cout<<"k = "<<k<<endl;
+	 cout<<"j = "<<j<<endl;
+	 cout<<"clone function"<<endl;
+	 //(TH1F*)hpp_gen[k][j]->Clone(Form("hpp_genratio%d%d",k,j)); //RUNS
+	 (TH1F*)hpp_gen[k][j]->Clone(Form("hpp_genratio_R%d_%s",list_radius[k],etaWidth[j]));
 	 
-	(TH1F*)hpp_gen[k][j]->Clone(Form("hpp_genratio%d%d",k,j));
-	//TH1F *hpp_genratio[k][j] = (TH1F*)hpp_gen[k][j]->Clone(Form("hpp_genratio_R%d_%s",[k],[j]))
-	//I already have the tcanvas for this
-	tppGenfunc[k][j]->cd();
-	tppGenfunc[k][j]->SetLogy();
-	hpp_gen[k][j]->Draw();
-	
-	cout<<"set fn parameters"<<endl;
-	fppgen[k][j]->SetParameters(2.48655e+18,-1.07687e+01,8.73641e+01);
-	cout<<"fit fn"<<endl;
-	hpp_gen[k][j]->Fit(Form("fppgen_%d_%s",list_radius[k],etaWidth[j]),"LL","",40,200);
-	fppgen[k][j]->SetRange(25,1000);
-	
-	(TH1F*)hpp_gen[k][j]->Clone(Form("hpp_genfunc_R%d_%s",list_radius[k],etaWidth[j]));
-		
-	
-	for (int i=1;i<=hpp_gen[k][j]->GetNbinsX();i++) //fill hF from h or f? Hard to tell.
-   {
-      double var = fppgen[k][j]->Integral(hpp_gen[k][j]->GetBinLowEdge(i),hpp_gen[k][j]->GetBinLowEdge(i+1))/hpp_gen[k][j]->GetBinWidth(i);
-      hpp_genratio[k][j]->SetBinContent(i,var);
-   }
-	
-	fppgen[k][j]->Draw("same");
-	tppGenfunc[k][j]->SaveAs(Form("/net/hisrv0001/home/obaron/CMSSW_5_3_16/drawfiles/output/hpp_genfunc_data_%s_R%d_%s_made_%d.png",algo,list_radius[k],etaWidth[j],date.GetDate()),"RECREATE");
-	
-	tppGenrat[k][j]->cd();
-	hpp_genratio[k][j]->Divide(hpp_genfunc[k][j]);
-	hpp_genratio[k][j]->Draw(); 
-	tppGenrat[k][j]->SaveAs(Form("/net/hisrv0001/home/obaron/CMSSW_5_3_16/drawfiles/output/hpp_gentatio_data_%s_R%d_%s_made_%d.png",algo,list_radius[k],etaWidth[j],date.GetDate()),"RECREATE");
-	
+	 //(TH1F*)hpp_gen[k][j]->Clone(hpp_genratio[k][j]); //new test
+	 //TH1F *hpp_genratio[k][j]= (TH1F*)hpp_gen[k][j]->Clone(); //ERROR
+	 //TH1F* hpp_gen[k][j]->Clone() = hpp_genratio[k][j]; //??
+	 
+	 cout<<"everything is fine"<<endl;
+	 //break;
+	 //TH1F Form("*hpp_genratio%d%d",k,j) = (TH1F*)hpp_gen[k][j]->Clone(Form("hpp_genratio%d%d",k,j)); //TEST
+	 TH1F *GenTest = (TH1F*)hpp_gen[k][j]->Clone("GenTest");
+	 tppRecofunc[k][j]->cd();
+	 tppGenfunc[k][j]->cd();
+	 hpp_gen[k][j]->Draw();
+	 cout<<"set fn parameters"<<endl;
+	 fppgen[k][j]->SetParameters(2.48655e+18,-1.07687e+01,8.73641e+01);
+	 cout<<"fit fn"<<endl;
+	 //hpp_gen[k][j]->Fit(Form("fppgen_%d_%s",list_radius[k],etaWidth[j]),"LL","",25,700);//old
+	 hpp_gen[k][j]->Fit(Form("fppgen_%d_%s",list_radius[k],etaWidth[j]),"LL","",40,200);
+	 cout<<"set other fn stuff"<<endl;
+	 fppgen[k][j]->SetRange(25,1000);
+	 fppgen[k][j]->Draw("same");
+	 fppgen[k][j]->Write();
+	 tppGenfunc[k][j]->SaveAs(Form("/net/hisrv0001/home/obaron/CMSSW_5_3_16/drawfiles/output/hpp_genfunc_data_%s_R%d_%s_made_%d.png",algo,list_radius[k],etaWidth[j],date.GetDate()),"RECREATE");
+	 
+	 
+	 (TH1F*)hpp_reco[k][j]->Clone(Form("hpp_recoratio%d%d",k,j));
+	 hpp_reco[k][j]->Draw();
+	 fppreco[k][j]->SetParameters(4.23532e23,-12.498,134.849);
+	 cout<<"Fitting Reco:"<<endl;
+	 //hpp_reco[k][j]->Fit(Form("fppreco_%d_%s",list_radius[k],etaWidth[j]),"LL","",25,700);//old
+	 hpp_reco[k][j]->Fit(Form("fppreco_%d_%s",list_radius[k],etaWidth[j]),"LL","",40,200);
+	 cout<<"Reco Fitted"<<endl;
+	 fppreco[k][j]->SetRange(25,1000);
+	 fppreco[k][j]->Draw("same");
+	 fppreco[k][j]->Write();
+	 tppRecofunc[k][j]->SaveAs(Form("/net/hisrv0001/home/obaron/CMSSW_5_3_16/drawfiles/output/hpp_recofunc_data_%s_R%d_%s_made_%d.png",algo,list_radius[k],etaWidth[j],date.GetDate()),"RECREATE");
+	 
+	 //ratio plots here:
+	 //Form("hpp_genratio%d%d",k,j)->Divide(fppgen[k][j]); doesn't work
+	 tppGenrat[k][j]->cd();
+	 cout<<"before division"<<endl;
+	 hpp_genratio[k][j]->Divide(fppgen[k][j],1);
+	 cout<<"Drawing:"<<endl;
+	 hpp_genratio[k][j]->Draw();
+	 cout<<"Printing:"<<endl;
+	 hpp_genratio[k][j]->Print();
+	 cout<<"Writing:"<<endl;
+	 hpp_genratio[k][j]->Write();
+	 cout<<"Saving:"<<endl;
+	 tppGenrat[k][j]->Write();
+	 tppGenrat[k][j]->SaveAs(Form("/net/hisrv0001/home/obaron/CMSSW_5_3_16/drawfiles/output/hpp_genratio_data_%s_R%d_%s_made_%d.png",algo,list_radius[k],etaWidth[j],date.GetDate()),"RECREATE");
+	 cout<<"dividing reco"<<endl;
+	 GenTest->Divide(fppgen[k][j]);
+	 GenTest->Draw();
+	 GenTest->Write();
+	 
+	 	 
 	 //plotting things here!
 	    
 	  gStyle->SetOptLogy();
