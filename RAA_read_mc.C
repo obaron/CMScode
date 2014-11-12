@@ -571,8 +571,10 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
       hpp_matrix[k][j] = new TH2F(Form("hpp_matrix_R%d_%s",list_radius[k],etaWidth[j]),Form("matrix refpt jtpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt,nbins_pt,boundaries_pt);
       hpp_logmat[k][j] = new TH2F(Form("hpp_logmatrix_R%d_%s",list_radius[k],etaWidth[j]),Form("matrix log scale refpt jtpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt,nbins_pt,boundaries_pt);
 
-	  hpp_genratio[k][j] = new TH1F(Form("hpp_genratio_R%d_%s",list_radius[k],etaWidth[j]),Form("genratio refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
-	  hpp_genfunc[k][j] = new TH1F(Form("hpp_genfunc_R%d_%s",list_radius[k],etaWidth[j]),Form("genfunc refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
+	  hpp_genratio[k][j] = new TH1F(Form("hpp_genratio%d%d",k,j),Form("genratio refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
+	  hpp_genfunc[k][j] = new TH1F(Form("hpp_genfunc%d%d",k,j),Form("genfunc refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
+	  //hpp_genratio[k][j] = new TH1F(Form("hpp_genratio_R%d_%s",list_radius[k],etaWidth[j]),Form("genratio refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
+	  //hpp_genfunc[k][j] = new TH1F(Form("hpp_genfunc_R%d_%s",list_radius[k],etaWidth[j]),Form("genfunc refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
 	  fppgen[k][j] = new TF1(Form("fppgen_%d_%s",list_radius[k],etaWidth[j]),"[0]*pow(x+[2],[1])");
 	  
 	  hpp_recoratio[k][j] = new TH1F(Form("hpp_recoratio_R%d_%s",list_radius[k],etaWidth[j]),Form("recoratio jtpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
@@ -1137,8 +1139,9 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
 	 //Let's do a power law fit here for pp:
 
 	 
-	(TH1F*)hpp_gen[k][j]->Clone(Form("hpp_genratio%d%d",k,j));
-	//TH1F *hpp_genratio[k][j] = (TH1F*)hpp_gen[k][j]->Clone(Form("hpp_genratio_R%d_%s",[k],[j]))
+	cout<<"define hpp_genratio"<<endl;
+	*hpp_genratio[k][j] = (TH1F*)hpp_gen[k][j]->Clone(Form("hpp_genratio%d%d",k,j));
+	cout<<"hpp_genratio has been defined"<<endl;
 	//I already have the tcanvas for this
 	tppGenfunc[k][j]->cd();
 	tppGenfunc[k][j]->SetLogy();
@@ -1150,8 +1153,9 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
 	hpp_gen[k][j]->Fit(Form("fppgen_%d_%s",list_radius[k],etaWidth[j]),"LL","",40,200);
 	fppgen[k][j]->SetRange(25,1000);
 	
-	(TH1F*)hpp_gen[k][j]->Clone(Form("hpp_genfunc_R%d_%s",list_radius[k],etaWidth[j]));
-		
+	cout<<"define hpp_genfunc"<<endl;
+	*hpp_genfunc[k][j] =(TH1F*)hpp_gen[k][j]->Clone(Form("hpp_genfunc%d%d",k,j));
+	cout<<"hpp_genfunc has been defined"<<endl;	
 	
 	for (int i=1;i<=hpp_gen[k][j]->GetNbinsX();i++) //fill hF from h or f? Hard to tell.
    {
@@ -1159,13 +1163,18 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
       hpp_genratio[k][j]->SetBinContent(i,var);
    }
 	
+	hpp_genratio[k][j]->Print("base");
+	hpp_genfunc[k][j]->Print("base");
+	
 	fppgen[k][j]->Draw("same");
 	tppGenfunc[k][j]->SaveAs(Form("/net/hisrv0001/home/obaron/CMSSW_5_3_16/drawfiles/output/hpp_genfunc_data_%s_R%d_%s_made_%d.png",algo,list_radius[k],etaWidth[j],date.GetDate()),"RECREATE");
 	
 	tppGenrat[k][j]->cd();
-	hpp_genratio[k][j]->Divide(hpp_genfunc[k][j]);
-	hpp_genratio[k][j]->Draw(); 
+	hpp_genratio[k][j]->Divide(hpp_genfunc[k][j]); //DIVIDE BY HISTOGRAM
+	//hpp_genratio[k][j]->Divide(fppgen[k][j],1); //DIVIDE BY FUNCTION
+	hpp_genratio[k][j]->Draw();
 	tppGenrat[k][j]->SaveAs(Form("/net/hisrv0001/home/obaron/CMSSW_5_3_16/drawfiles/output/hpp_gentatio_data_%s_R%d_%s_made_%d.png",algo,list_radius[k],etaWidth[j],date.GetDate()),"RECREATE");
+	
 	
 	 //plotting things here!
 	    
