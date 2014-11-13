@@ -1025,22 +1025,22 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
 		gStyle->SetOptLogy();
 		gStyle->SetOptLogx(0);
 		gStyle->SetOptLogz(0);
-		pbcombo[k][j][i].Divide(3,1);
-		pbcombo[k][j][i].cd(1);
+		pbcombo[k][j][i]->Divide(3,1);
+		pbcombo[k][j][i]->cd(1);
 		hpbpb_gen[k][j][i]->Scale(1./delta_eta[j]);
 		hpbpb_gen[k][j][i]->GetYaxis()->SetTitle("Event Fraction");
 		hpbpb_gen[k][j][i]->GetXaxis()->SetTitle("Generator jet p_{T}");
 		hpbpb_gen[k][j][i]->Write();
 		hpbpb_gen[k][j][i]->Print("base");
 		hpbpb_gen[k][j][i]->Draw();
-		pbcombo[k][j][i].cd(2);
+		pbcombo[k][j][i]->cd(2);
 		hpbpb_reco[k][j][i]->Scale(1./delta_eta[j]);
 		hpbpb_reco[k][j][i]->GetYaxis()->SetTitle("Event Fraction");
 		hpbpb_reco[k][j][i]->GetXaxis()->SetTitle("Reconstructed jet p_{T}");
 		hpbpb_reco[k][j][i]->Write();
 		hpbpb_reco[k][j][i]->Print("base");
 		hpbpb_reco[k][j][i]->Draw();
-		pbcombo[k][j][i].cd(3);
+		pbcombo[k][j][i]->cd(3);
 		hpbpb_mcclosure_data[k][j][i]->Scale(1./delta_eta[j]);
 		hpbpb_mcclosure_data[k][j][i]->Write();
 		hpbpb_mcclosure_data[k][j][i]->Print("base");
@@ -1140,7 +1140,7 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
 
 	 //Let's do a power law fit here for pp:
  //gen
-	*hpp_genratio[k][j] = (TH1F*)hpp_gen[k][j]->Clone(Form("genratio refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]));
+	hpp_genratio[k][j] = (TH1F*)hpp_gen[k][j]->Clone(Form("genratio refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]));
 		
 	tppGenfunc[k][j]->cd();
 	tppGenfunc[k][j]->SetLogy();
@@ -1153,7 +1153,7 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
 	fppgen[k][j]->SetRange(25,1000);
 	
 	cout<<"define hpp_genfunc"<<endl;
-	*hpp_genfunc[k][j] =(TH1F*)hpp_gen[k][j]->Clone(Form("genfunc refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]));
+	hpp_genfunc[k][j] =(TH1F*)hpp_gen[k][j]->Clone(Form("genfunc refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]));
 	cout<<"hpp_genfunc has been defined"<<endl;	
 	
 	for (int i=1;i<=hpp_gen[k][j]->GetNbinsX();i++) //fill hF from h or f? Hard to tell.
@@ -1175,7 +1175,7 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
 	tppGenrat[k][j]->SaveAs(Form("/net/hisrv0001/home/obaron/CMSSW_5_3_16/drawfiles/output/hpp_genratio_data_%s_R%d_%s_made_%d.png",algo,list_radius[k],etaWidth[j],date.GetDate()),"RECREATE");
 	
 //reco	
-	*hpp_recoratio[k][j] = (TH1F*)hpp_gen[k][j]->Clone(Form("genratio refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]));
+	hpp_recoratio[k][j] = (TH1F*)hpp_gen[k][j]->Clone(Form("genratio refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]));
 	
 	tppRecofunc[k][j]->cd();
 	tppRecofunc[k][j]->SetLogy();
@@ -1187,7 +1187,7 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
 	cout<<"Reco Fitted"<<endl;
 	fppreco[k][j]->SetRange(25,1000);
 	
-	*hpp_recofunc[k][j] = (TH1F*)hpp_reco[k][j]->Clone(Form("recofunc jtpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]));
+	hpp_recofunc[k][j] = (TH1F*)hpp_reco[k][j]->Clone(Form("recofunc jtpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]));
 
 	for (int i=1;i<=hpp_reco[k][j]->GetNbinsX();i++)
    {
