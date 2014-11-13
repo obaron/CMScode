@@ -199,7 +199,7 @@ public:
   TTree *tJet;
   TTree *tGenJet;
   TTree *tEvt;
-  TTree* tSkim;
+  TTree *tSkim;
   float jtpt[1000];
   float rawpt[1000];
   float refpt[1000];
@@ -223,10 +223,9 @@ public:
   int pPAcollisionEventSelectionPA;
   int pcollisionEventSelection;
 };
-
-cout<<"preloaded"<<endl;
-
 using namespace std;
+
+
 
 //void RAA_read_mc(char *algo = "Vs", char *jet_type = "Calo"){
 void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
@@ -482,6 +481,7 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
   TF1 *fppgen[no_radius][nbins_eta];
   
   TH1F *hpp_recoratio[no_radius][nbins_eta];
+  TH1F *hpp_recofunc[no_radius][nbins_eta];
   TCanvas *tppRecofunc[no_radius][nbins_eta];
   TCanvas *tppRecorat[no_radius][nbins_eta];
   TF1 *fppreco[no_radius][nbins_eta];  
@@ -573,12 +573,12 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
 
 	  hpp_genratio[k][j] = new TH1F(Form("hpp_genratio%d%d",k,j),Form("genratio refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
 	  hpp_genfunc[k][j] = new TH1F(Form("hpp_genfunc%d%d",k,j),Form("genfunc refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
-	  //hpp_genratio[k][j] = new TH1F(Form("hpp_genratio_R%d_%s",list_radius[k],etaWidth[j]),Form("genratio refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
-	  //hpp_genfunc[k][j] = new TH1F(Form("hpp_genfunc_R%d_%s",list_radius[k],etaWidth[j]),Form("genfunc refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
 	  fppgen[k][j] = new TF1(Form("fppgen_%d_%s",list_radius[k],etaWidth[j]),"[0]*pow(x+[2],[1])");
 	  
-	  hpp_recoratio[k][j] = new TH1F(Form("hpp_recoratio_R%d_%s",list_radius[k],etaWidth[j]),Form("recoratio jtpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
+	  hpp_recoratio[k][j] = new TH1F(Form("hpp_recoratio%d%d",k,j),Form("recoratio jtpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
+	  hpp_recofunc[k][j] = new TH1F(Form("hpp_recofunc%d%d",k,j),Form("recofunc jtpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
 	  fppreco[k][j] = new TF1(Form("fppreco_%d_%s",list_radius[k],etaWidth[j]),"[0]*pow(x+[2],[1])");
+	  
 	  
 	  gStyle->SetOptLogy(0);
 	  gStyle->SetOptLogx(0);
@@ -991,6 +991,7 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
             if (jentry>dataPP[k][h]->tJet->GetEntries()/2.)
               hpp_mcclosure_data[k][j]->Fill(dataPP[k][h]->jtpt[g],scalepp*weight_vz);
             
+			
           }//eta loop
 	              
         }//njet loop     
@@ -998,6 +999,7 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
       }//nentry loop
     
     }//ptbins loop
+
 
   }// radius loop
 
@@ -1137,12 +1139,9 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
       hpp_mcclosure_data[k][j]->Print("base");
 
 	 //Let's do a power law fit here for pp:
-
-	 
-	cout<<"define hpp_genratio"<<endl;
-	*hpp_genratio[k][j] = (TH1F*)hpp_gen[k][j]->Clone(Form("hpp_genratio%d%d",k,j));
-	cout<<"hpp_genratio has been defined"<<endl;
-	//I already have the tcanvas for this
+ //gen
+	*hpp_genratio[k][j] = (TH1F*)hpp_gen[k][j]->Clone(Form("genratio refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]));
+		
 	tppGenfunc[k][j]->cd();
 	tppGenfunc[k][j]->SetLogy();
 	hpp_gen[k][j]->Draw();
@@ -1154,7 +1153,7 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
 	fppgen[k][j]->SetRange(25,1000);
 	
 	cout<<"define hpp_genfunc"<<endl;
-	*hpp_genfunc[k][j] =(TH1F*)hpp_gen[k][j]->Clone(Form("hpp_genfunc%d%d",k,j));
+	*hpp_genfunc[k][j] =(TH1F*)hpp_gen[k][j]->Clone(Form("genfunc refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]));
 	cout<<"hpp_genfunc has been defined"<<endl;	
 	
 	for (int i=1;i<=hpp_gen[k][j]->GetNbinsX();i++) //fill hF from h or f? Hard to tell.
@@ -1173,7 +1172,39 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
 	hpp_genratio[k][j]->Divide(hpp_genfunc[k][j]); //DIVIDE BY HISTOGRAM
 	//hpp_genratio[k][j]->Divide(fppgen[k][j],1); //DIVIDE BY FUNCTION
 	hpp_genratio[k][j]->Draw();
-	tppGenrat[k][j]->SaveAs(Form("/net/hisrv0001/home/obaron/CMSSW_5_3_16/drawfiles/output/hpp_gentatio_data_%s_R%d_%s_made_%d.png",algo,list_radius[k],etaWidth[j],date.GetDate()),"RECREATE");
+	tppGenrat[k][j]->SaveAs(Form("/net/hisrv0001/home/obaron/CMSSW_5_3_16/drawfiles/output/hpp_genratio_data_%s_R%d_%s_made_%d.png",algo,list_radius[k],etaWidth[j],date.GetDate()),"RECREATE");
+	
+//reco	
+	*hpp_recoratio[k][j] = (TH1F*)hpp_gen[k][j]->Clone(Form("genratio refpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]));
+	
+	tppRecofunc[k][j]->cd();
+	tppRecofunc[k][j]->SetLogy();
+	hpp_reco[k][j]->Draw();
+	
+	fppreco[k][j]->SetParameters(4.23532e23,-12.498,134.849);
+	cout<<"Fitting Reco:"<<endl;
+	hpp_reco[k][j]->Fit(Form("fppreco_%d_%s",list_radius[k],etaWidth[j]),"LL","",40,200);
+	cout<<"Reco Fitted"<<endl;
+	fppreco[k][j]->SetRange(25,1000);
+	
+	*hpp_recofunc[k][j] = (TH1F*)hpp_reco[k][j]->Clone(Form("recofunc jtpt ak%s%d%s %s",algo,list_radius[k],jet_type,etaWidth[j]));
+
+	for (int i=1;i<=hpp_reco[k][j]->GetNbinsX();i++)
+   {
+      double var = fppreco[k][j]->Integral(hpp_reco[k][j]->GetBinLowEdge(i),hpp_reco[k][j]->GetBinLowEdge(i+1))/hpp_reco[k][j]->GetBinWidth(i);
+      hpp_recoratio[k][j]->SetBinContent(i,var);
+   }	
+	 
+	hpp_recoratio[k][j]->Print("base");
+	hpp_recofunc[k][j]->Print("base");
+	
+	fppreco[k][j]->Draw("same");
+	tppRecofunc[k][j]->SaveAs(Form("/net/hisrv0001/home/obaron/CMSSW_5_3_16/drawfiles/output/hpp_recofunc_data_%s_R%d_%s_made_%d.png",algo,list_radius[k],etaWidth[j],date.GetDate()),"RECREATE");
+	
+	tppRecorat[k][j]->cd();
+	hpp_recoratio[k][j]->Divide(hpp_recofunc[k][j]);
+	hpp_recoratio[k][j]->Draw();
+	tppRecorat[k][j]->SaveAs(Form("/net/hisrv0001/home/obaron/CMSSW_5_3_16/drawfiles/output/hpp_recoratatio_data_%s_R%d_%s_made_%d.png",algo,list_radius[k],etaWidth[j],date.GetDate()),"RECREATE");
 	
 	
 	 //plotting things here!
@@ -1282,9 +1313,8 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "Calo"){
 	
 	
   }// radius loop
-
   
-  f.Write();
+  f.Write();  
   f.Close();
   
   
