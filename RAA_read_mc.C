@@ -117,6 +117,14 @@ static const double boundaries_eta[nbins_eta][2] = {
   {-2.0,+2.0}
 };
 
+static const int combo_plots = 6;
+static const double combo_array[combo_plots+1][3] = {
+	{1,2,3},	{4,5,6},
+	{7,8,9},	{10,11,12},
+	{13,14,15}, {16,17,18},
+	{19,20,21}
+};
+
 static const double delta_eta[nbins_eta] = {
  4.0
 };
@@ -185,9 +193,12 @@ public:
     tJet->SetBranchAddress("rawpt", rawpt);
     tJet->SetBranchAddress("trackMax" , trackMax );
     tJet->SetBranchAddress("chargedMax",chargedMax);
+	tJet->SetBranchAddress("eMax",eMax);
     tJet->SetBranchAddress("chargedSum",chargedSum);
     tJet->SetBranchAddress("neutralMax",neutralMax);
     tJet->SetBranchAddress("neutralSum",neutralSum);
+    tJet->SetBranchAddress("photonSum",photonSum);
+    tJet->SetBranchAddress("muSum",muSum);
     tJet->SetBranchAddress("refpt", refpt);
     tJet->SetBranchAddress("nref" ,&njets);
     tJet->SetBranchAddress("jteta", jteta);
@@ -226,6 +237,11 @@ public:
   float chargedSum[1000];
   float neutralSum[1000];
   float genpt[1000];
+  float eMax[1000];
+  float sumCand[1000];
+  float muSum[1000];
+  float photonSum[1000];
+  
   int gensubid[1000];
   int subid[1000];
   float vz;
@@ -505,6 +521,7 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
   TF1 *fppreco[no_radius][nbins_eta];  
   
   TCanvas *pbcombo[no_radius][nbins_eta];
+  TCanvas *pbmatcombo[no_radius][nbins_eta];
 //  TCanvas *tpbpbgen[no_radius][nbins_eta][nbins_cent+1];
 //  TCanvas *tpbpbreco[no_radius][nbins_eta][nbins_cent+1];
   TCanvas *tpbpbmat[no_radius][nbins_eta][nbins_cent+1];
@@ -542,7 +559,8 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
 	gStyle->SetOptLogx(0);
 	//tpbpbgen[k][j][i] = new TCanvas();
 	//tpbpbreco[k][j][i] = new TCanvas();
-	pbcombo[k][j] = new TCanvas(Form("hpbpb_plots_data_R%d_%s_cent%d",list_radius[k],etaWidth[j],i),Form("pbpb plots R%d %s %2.0f - %2.0f cent",list_radius[k],etaWidth[j],2.5*boundaries_cent[i],2.5*boundaries_cent[i+1]),1500,500);
+	pbcombo[k][j] = new TCanvas(Form("hpbpb_plots_MC_R%d_%s_cent%d",list_radius[k],etaWidth[j],i),Form("pbpb plots R%d %s %2.0f - %2.0f cent",list_radius[k],etaWidth[j],2.5*boundaries_cent[i],2.5*boundaries_cent[i+1]),3000,2000);
+	pbmatcombo[k][j] = new TCanvas(Form("hpbpb_matrix_MC_R%d_%s_cent%d",list_radius[k],etaWidth[j],i),Form("pbpb matrix R%d %s %2.0f - %2.0f cent",list_radius[k],etaWidth[j],2.5*boundaries_cent[i],2.5*boundaries_cent[i+1]),1500,500);
 	gStyle->SetOptLogx(1);
 	tpbpblogmat[k][j][i] = new TCanvas();
 	gStyle->SetOptLogx(0);
@@ -559,17 +577,17 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
 	  //wait, what the hell is this for?? Why is it outside the centrality loop? OOOHHHH, because it's for cent = 6!!!
       hpbpb_gen[k][j][nbins_cent] = new TH1F(Form("hpbpb_gen_R%d_%s_cent%d",list_radius[k],etaWidth[j],nbins_cent),Form("Gen refpt ak%s%d%s %s 0 - 200 cent",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
       hpbpb_reco[k][j][nbins_cent] = new TH1F(Form("hpbpb_reco_R%d_%s_cent%d",list_radius[k],etaWidth[j],nbins_cent),Form("Reco jtpt ak%s%d%s %s 0 - 200 cent",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
+	    cout<<"line 572"<<endl;
       hpbpb_matrix[k][j][nbins_cent] = new TH2F(Form("hpbpb_matrix_R%d_%s_cent%d",list_radius[k],etaWidth[j],nbins_cent),Form("Matrix refpt jtpt ak%s%d%s %s 0 - 200 cent",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt,nbins_pt,boundaries_pt);
       hpbpb_logmat[k][j][nbins_cent] = new TH2F(Form("hpbpb_logmatrix_R%d_%s_cent%d",list_radius[k],etaWidth[j],nbins_cent),Form("Matrix log scale refpt jtpt ak%s%d%s %s 0 - 200 cent",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt,nbins_pt,boundaries_pt);
       hpbpb_jeccheck[k][j][nbins_cent] = new TH2F(Form("hpbpb_jeccheck_R%d_%s_cent%d",list_radius[k],etaWidth[j],nbins_cent),Form("JEC Check ak%s%d%s %s 0 - 200 cent",algo,list_radius[k],jet_type,etaWidth[j]),1000,0,300,1000,0,10);
       //hpbpb_jeccheck[k][j][nbins_cent] = new TH2F(Form("hpbpb_jeccheck_R%d_%s_cent%d",list_radius[k],etaWidth[j],nbins_cent),Form("JEC Check R%d %s 0 - 200 cent",list_radius[k],etaWidth[j]),nbins_pt,boundaries_pt,nbins_pt,boundaries_pt);
       hpbpb_mcclosure_data[k][j][nbins_cent] = new TH1F(Form("hpbpb_mcclosure_data_R%d_%s_cent%d",list_radius[k],etaWidth[j],nbins_cent),Form("data for unfolding mc closure test ak%s%d%s %s 0 - 200 cent",algo,list_radius[k],jet_type,etaWidth[j]),nbins_pt,boundaries_pt);
-	  
 	gStyle->SetOptLogy(1);
 	gStyle->SetOptLogx(0);
 	//tpbpbgen[k][j][nbins_cent] = new TCanvas();
 	//tpbpbreco[k][j][nbins_cent] = new TCanvas();
-	pbcombo[k][j] = new TCanvas(Form("hpbpb_plots_data_R%d_%s_cent%d",list_radius[k],etaWidth[j],nbins_cent),Form("pbpb plots ak%s%d%s %s 0 - 200 cent",algo,list_radius[k],jet_type,etaWidth[j]),1500,500);
+	//pbcombo[k][j] = new TCanvas(Form("hpbpb_plots_data_R%d_%s_cent%d",list_radius[k],etaWidth[j],nbins_cent),Form("pbpb plots ak%s%d%s %s 0 - 200 cent",algo,list_radius[k],jet_type,etaWidth[j]),1500,1000);
 	gStyle->SetOptLogx(1);
 	tpbpblogmat[k][j][nbins_cent] = new TCanvas();
 	gStyle->SetOptLogx(0);
@@ -658,7 +676,7 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
 	//let's put the second centrality loop here
 	for(int i = 0;i<nbins_cent;i++){
 
-	//	pbcombo[k][j] = new TCanvas(Form("hpbpb_plots_data_R%d_%s_cent%d",list_radius[k],etaWidth[j],i),Form("pbpb plots R%d %s %2.0f - %2.0f cent",list_radius[k],etaWidth[j],2.5*boundaries_cent[i],2.5*boundaries_cent[i+1]),1500,500);
+	//pbcombo[k][j] = new TCanvas(Form("hpbpb_plots_data_R%d_%s_cent%d",list_radius[k],etaWidth[j],i),Form("pbpb plots R%d %s %2.0f - %2.0f cent",list_radius[k],etaWidth[j],2.5*boundaries_cent[i],2.5*boundaries_cent[i+1]),1500,500);
 	hpbpb_etadist[k][i] = new TH1F(Form("hpbpb_eta_R%d_cent%d",list_radius[k],i),Form("PbPb eta dist ak%s%d%s %2.0f - %2.0f cent",algo,list_radius[k],jet_type,2.5*boundaries_cent[i],2.5*boundaries_cent[i+1]),100,-4,4);	
 	hpbpb_phidist[k][i] = new TH1F(Form("hpbpb_phi_R%d_cent%d",list_radius[k],i),Form("PbPb phi dist ak%s%d%s %2.0f - %2.0f cent",algo,list_radius[k],jet_type,2.5*boundaries_cent[i],2.5*boundaries_cent[i+1]),100,-1*TMath::Pi(),TMath::Pi());
 
@@ -820,8 +838,8 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
 	  continue;
 	}
 	
-	//moved the cut here. Do other cuts need to be moved?
-	if ( data[k][h]->chargedMax[g]/data[k][h]->jtpt[g]<0.05) continue;
+	//moved the cut here.
+	if ( data[k][h]->chargedMax[g]/data[k][h]->jtpt[g]<0.02) continue;
 	
 	hPbPb_pthat_fine[k]->Fill(data[k][h]->pthat,weight_vz*scale);
 	hPbPb_pthat_fine_noScale[k]->Fill(data[k][h]->pthat);
@@ -851,13 +869,16 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
 		 //hpbpb_eta_full_noScale[k]->Fill(data[k][h]->jteta[g]);
 		 //hpbpb_phi_full_noScale[k]->Fill(data[k][h]->jtphi[g]);
   
+		 float sumCand = data[k][h]->chargedSum[g]+data[k][h]->photonSum[g]+data[k][h]->neutralSum[g]+data[k][h]->muSum[g];
+  
 		 if ( data[k][h]->subid[g] != 0 ) continue;
-		 if ( data[k][h]->rawpt[g] <= 20. ) continue; //was:10
-		 if ( data[k][h]->refpt[g] <= 15. ) continue; //to see if we can get a better response matrix
+		 //if ( data[k][h]->rawpt[g] <= 20. ) continue; //was:10
+		 //if ( data[k][h]->refpt[g] <= 15. ) continue; //to see if we can get a better response matrix
 		 //if ( data[k][h]->jtpt[g] <= 15 ) continue;
 		 if ( data[k][h]->jtpt[g] > 2.*data[k][h]->pthat) continue;
-
-		 // jet quality cuts here:
+		 //if ( data[k][h]->eMax[g] / sumCand < 0.8) continue; //added March 02 2015
+		 if ( data[k][h]->eMax[g]/data[k][h]->jtpt[g] > 0.6 || data[k][h]->chargedMax[g]/data[k][h]->jtpt[g] < 0.02) continue; //added 3/6/15
+		 // jet quality cuts here
 		 
 		 //if ( data[k][h]->neutralMax[g]/TMath::Max(data[h]->chargedSum[k],data[h]->neutralSum[k]) < 0.975)continue;
 
@@ -969,6 +990,7 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
         dataPP[k][h]->tEvt->GetEntry(jentry);
 		dataPP[k][h]->tJet->GetEntry(jentry);
 
+		
 	//dataPP[k][h]->tGenJet->GetEntry(jentry);
 	//if(dataPP[k][h]->pthat<boundariesPP_pthat[h] || dataPP[k][h]->pthat>boundariesPP_pthat[i+1]) continue;
         //if(dataPP[k][h]->bin<=28) continue;
@@ -1009,9 +1031,10 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
 		 //hpp_eta_full_noScale[k]->Fill(dataPP[k][h]->jteta[g]); 
 		 //hpp_phi_full_noScale[k]->Fill(dataPP[k][h]->jtphi[g]); 
 		 
-		 if ( dataPP[k][h]->rawpt[g] <= 10. ) continue;
-		 if ( dataPP[k][h]->refpt[g] <= 15. ) continue; // to see if we can get a better response matrix.
+		 //if ( dataPP[k][h]->rawpt[g] <= 10. ) continue;
+		 //if ( dataPP[k][h]->refpt[g] <= 15. ) continue; // to see if we can get a better response matrix.
 		 if ( dataPP[k][h]->jtpt[g] > 2.*dataPP[k][h]->pthat) continue;
+		
 		 // jet QA cuts:
 		 if ( dataPP[k][h]->chargedMax[g]/dataPP[k][h]->jtpt[g]<0.01) continue;
 		 //if ( dataPP[k][h]->neutralMax[g]/TMath::Max(dataPP[k][h]->chargedSum[g],dataPP[k][h]->neutralSum[g]) < 0.975)continue;
@@ -1083,7 +1106,20 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
   for(int k = 0;k<no_radius;k++){
     
     for(int j=0;j<nbins_eta;j++){
-      
+    
+	pbmatcombo[k][j]->cd();
+	  gStyle->SetOptLogy(0);
+	  gStyle->SetOptLogx(0);
+	  gStyle->SetOptLogz(0);	
+	  pbmatcombo[k][j]->Divide(4,2);
+	
+	  pbcombo[k][j]->cd();
+	  gStyle->SetOptLogy();
+	  gStyle->SetOptLogx(0);
+	  gStyle->SetOptLogz(0);
+	  pbcombo[k][j]->Divide(6,4);
+	  
+	
       for(int i = 0;i<=nbins_cent;i++){
     
         divideBinWidth(hpbpb_gen[k][j][i]);
@@ -1094,7 +1130,35 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
 	
 //pbcombo used to be here. It's gone now.	
 		
+		pbcombo[k][j]->cd();
+		pbcombo[k][j]->cd(combo_array[i][0]);
+		hpbpb_gen[k][j][i]->Scale(1./delta_eta[j]);
+		hpbpb_gen[k][j][i]->GetYaxis()->SetTitle("Event Fraction");
+		hpbpb_gen[k][j][i]->GetXaxis()->SetTitle("Generator jet p_{T}");
+		hpbpb_gen[k][j][i]->Write();
+		hpbpb_gen[k][j][i]->Print("base");
+		hpbpb_gen[k][j][i]->Draw();
+		pbcombo[k][j]->cd(combo_array[i][1]);
+		hpbpb_reco[k][j][i]->Scale(1./delta_eta[j]);
+		hpbpb_reco[k][j][i]->GetYaxis()->SetTitle("Event Fraction");
+		hpbpb_reco[k][j][i]->GetXaxis()->SetTitle("Reconstructed jet p_{T}");
+		hpbpb_reco[k][j][i]->Write();
+		hpbpb_reco[k][j][i]->Print("base");
+		hpbpb_reco[k][j][i]->Draw();
+		pbcombo[k][j]->cd(combo_array[i][2]);
+		hpbpb_mcclosure_data[k][j][i]->Scale(1./delta_eta[j]);
+		hpbpb_mcclosure_data[k][j][i]->Write();
+		hpbpb_mcclosure_data[k][j][i]->Print("base");
+		hpbpb_mcclosure_data[k][j][i]->Draw();
 		
+		pbmatcombo[k][j]->cd();
+		pbmatcombo[k][j]->cd(i+1);
+		hpbpb_matrix[k][j][i]->GetXaxis()->SetTitle("Matched Generator Jet p_{T}");
+		hpbpb_matrix[k][j][i]->GetYaxis()->SetTitle("Reconstructed Jet p_{T}");
+		hpbpb_matrix[k][j][i]->SetAxisRange(1e-11,1,"Z");
+		hpbpb_matrix[k][j][i]->SetAxisRange(0,500,"X");
+		hpbpb_matrix[k][j][i]->SetAxisRange(0,500,"Y");
+		hpbpb_matrix[k][j][i]->Draw("colz");
 	//attempt to do power law fit follows:	
 		
 		
@@ -1124,8 +1188,8 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
         hpbpb_matrix[k][j][i]->Write();
         hpbpb_matrix[k][j][i]->Print("base");
 		tpbpbmat[k][j][i]->cd();
-		hpbpb_matrix[k][j][i]->GetYaxis()->SetTitle("Matched Generator Jet p_{T}");
-		hpbpb_matrix[k][j][i]->GetXaxis()->SetTitle("Reconstructed Jet p_{T}");
+		hpbpb_matrix[k][j][i]->GetXaxis()->SetTitle("Matched Generator Jet p_{T}");
+		hpbpb_matrix[k][j][i]->GetYaxis()->SetTitle("Reconstructed Jet p_{T}");
 		hpbpb_matrix[k][j][i]->SetAxisRange(1e-11,1,"Z");
 		hpbpb_matrix[k][j][i]->SetAxisRange(0,500,"X");
 		hpbpb_matrix[k][j][i]->SetAxisRange(0,500,"Y");
@@ -1135,8 +1199,8 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
 		hpbpb_logmat[k][j][i]->Write();
         hpbpb_logmat[k][j][i]->Print("base");
 		tpbpblogmat[k][j][i]->cd();
-		hpbpb_logmat[k][j][i]->GetYaxis()->SetTitle("Matched Generator Jet p_{T}");
-		hpbpb_logmat[k][j][i]->GetXaxis()->SetTitle("Reconstructed Jet p_{T}");
+		hpbpb_logmat[k][j][i]->GetXaxis()->SetTitle("Matched Generator Jet p_{T}");
+		hpbpb_logmat[k][j][i]->GetYaxis()->SetTitle("Reconstructed Jet p_{T}");
 	//	hpbpb_logmat[k][j][i]->SetAxisRange(1e-11,1,"Z");
 	//	hpbpb_logmat[k][j][i]->SetAxisRange(0,500,"X");
 	//	hpbpb_logmat[k][j][i]->SetAxisRange(0,500,"Y");
@@ -1153,8 +1217,15 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
 		tpbpbjec[k][j][i]->SaveAs(Form("/net/hisrv0001/home/obaron/CMSSW_5_3_20/drawfiles/output/hpbpb_jeccheck_%s_%s_R%d_%s_cent%d_made_%d.png",intype,algo,list_radius[k],etaWidth[j],i,date.GetDate()),"RECREATE");
 	
       }// cent loop 
-      
+   		//pbcombo[k][j]->Write();
+		//pbcombo[k][j]->Print("base");
+		pbcombo[k][j]->cd();
+		pbcombo[k][j]->Draw();
+		pbcombo[k][j]->SaveAs(Form("/net/hisrv0001/home/obaron/CMSSW_5_3_20/drawfiles/output/hpbpb_plots_combo_%s_R%d_%s_made_%d.png",algo,list_radius[k],etaWidth[j],date.GetDate()),"RECREATE");
 	  
+		pbmatcombo[k][j]->cd();
+		//pbmatcombo[k][j]->Draw();
+		pbmatcombo[k][j]->SaveAs(Form("/net/hisrv0001/home/obaron/CMSSW_5_3_20/drawfiles/output/hpbpb_matrix_combo_%s_R%d_%s_made_%d.png",algo,list_radius[k],etaWidth[j],date.GetDate()),"RECREATE");
 //	 for(int i = 0;i<=nbins_cent;i++){ 
 //	  } //jec check loop
 	  
