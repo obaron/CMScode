@@ -337,6 +337,10 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
   TF1 *fVz;
   TF1* fCentralityWeight;
   fVz = new TF1("fVz","[0]+[1]*x+[2]*x*x+[3]*x*x*x+[4]*x*x*x*x");
+  
+  TFile *fcentin = TFile::Open("/export/d00/scratch/rkunnawa/rootfiles/PbPb_DataMC_cent_ratio_20141117.root"); //this line added March 11 2015
+  TH1F *hCentWeight = (TH1F*)fcentin->Get("hCentRatio"); //this line added March 11 2015
+  
   fVz->SetParameters(7.62788e-01,-1.13228e-02,5.85199e-03,-3.04550e-04,4.43440e-05);
   fCentralityWeight = new TF1("fCentralityWeight","[0]*exp([1]+[2]*x+[3]*x*x+[4]*x*x*x)",0,40);
   fCentralityWeight->SetParameters(2.10653e-02,5.61607,-1.41493e-01,1.00586e-03,-1.32625e-04);
@@ -560,13 +564,13 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
 	//tpbpbgen[k][j][i] = new TCanvas();
 	//tpbpbreco[k][j][i] = new TCanvas();
 	pbcombo[k][j] = new TCanvas(Form("hpbpb_plots_MC_R%d_%s_cent%d",list_radius[k],etaWidth[j],i),Form("pbpb plots R%d %s %2.0f - %2.0f cent",list_radius[k],etaWidth[j],2.5*boundaries_cent[i],2.5*boundaries_cent[i+1]),3000,2000);
-	pbmatcombo[k][j] = new TCanvas(Form("hpbpb_matrix_MC_R%d_%s_cent%d",list_radius[k],etaWidth[j],i),Form("pbpb matrix R%d %s %2.0f - %2.0f cent",list_radius[k],etaWidth[j],2.5*boundaries_cent[i],2.5*boundaries_cent[i+1]),1500,500);
 	gStyle->SetOptLogx(1);
 	tpbpblogmat[k][j][i] = new TCanvas();
 	gStyle->SetOptLogx(0);
 	gStyle->SetOptLogy(0);
 	gStyle->SetOptLogz(1);
 	tpbpbmat[k][j][i] = new TCanvas();
+	pbmatcombo[k][j] = new TCanvas(Form("hpbpb_matrix_MC_R%d_%s_cent%d",list_radius[k],etaWidth[j],i),Form("pbpb matrix R%d %s %2.0f - %2.0f cent",list_radius[k],etaWidth[j],2.5*boundaries_cent[i],2.5*boundaries_cent[i+1]),2800,1000);
 	tpbpbjec[k][j][i] = new TCanvas();
 	gStyle->SetOptLogy(0);
 	gStyle->SetOptLogz(0);
@@ -781,7 +785,7 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
 	//cout<<"xsection[pthatBin-1] = "<<xsection[pthatBin-1]<<", xsection[pthatBin] = "<<xsection[pthatBin]<<", bin content = "<<hPtHatRaw[k]->GetBinContent(pthatBin)<<endl;
         //double scale = (double)(xsection[pthatBin-1]-xsection[pthatBin])/entries[h];
 	
-        if(fabs(data[k][h]->vz)>15) continue;
+       
 		//if(!data[k][h]->pcollisionEventSelection || !data[k][h]->pHBHENoiseFilterpHBHENoiseFilter) continue; //COMMENTED OUT Oct 13 2014
 		
         //int cBin = hCentMC[k]->FindBin(data[k][h]->bin)-1;//old function
@@ -793,8 +797,11 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
         double weight_pt=1;
         double weight_vz=1;
 	
-        //weight_cent = fCentralityWeight->Eval(data[h]->bin);
-        //weight_vz = fVz->Eval(data[k][h]->vz);
+        weight_cent = hCentWeight->GetBinContent(hCentWeight->FindBin(data[k][h]->bin));
+         
+		 if(fabs(data[k][h]->vz)>15) continue;
+		
+		weight_vz = fVz->Eval(data[k][h]->vz);
 	
         if(scale*weight_cent*weight_vz <=0 ) {
 	  cout<<"RED FLAG RED FLAG RED FLAG"<<endl;
@@ -871,7 +878,7 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
   
 		 float sumCand = data[k][h]->chargedSum[g]+data[k][h]->photonSum[g]+data[k][h]->neutralSum[g]+data[k][h]->muSum[g];
   
-		 if ( data[k][h]->subid[g] != 0 ) continue;
+		 //if ( data[k][h]->subid[g] != 0 ) continue;
 		 //if ( data[k][h]->rawpt[g] <= 20. ) continue; //was:10
 		 //if ( data[k][h]->refpt[g] <= 15. ) continue; //to see if we can get a better response matrix
 		 //if ( data[k][h]->jtpt[g] <= 15 ) continue;
@@ -963,7 +970,7 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
   
     // Vertex reweighting for pp
     TF1 *fVzPP = new TF1("fVzPP","[0]+[1]*x+[2]*x*x+[3]*x*x*x+[4]*x*x*x*x");
-    fVzPP->SetParameters(8.41684e-01,-2.58609e-02,4.86550e-03,-3.10581e-04,2.07918e-05);
+    fVz->SetParameters(9.86748e-01, -8.91367e-03, 5.35416e-04, 2.67665e-06, -2.01867e-06);
   
     cout<<"Filling PP MC"<<endl;
     // fill pp MC
@@ -1002,7 +1009,10 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
         double weight_cent=1;
         double weight_pt=1;
         double weight_vz=1;
-        //if(!dataPP[k][h]->pPAcollisionEventSelectionPA || !dataPP[k][h]->pHBHENoiseFilter) continue;
+        
+		
+		
+		//if(!dataPP[k][h]->pPAcollisionEventSelectionPA || !dataPP[k][h]->pHBHENoiseFilter) continue;
 	//for now the MC doesnt have pPAcollisionEventSelectionPA so dont search for it. 
 	//if(!dataPP[k][h]->pHBHENoiseFilter) continue; //COMMENTED OUT Oct 13 2014
 
@@ -1110,11 +1120,11 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
 	pbmatcombo[k][j]->cd();
 	  gStyle->SetOptLogy(0);
 	  gStyle->SetOptLogx(0);
-	  gStyle->SetOptLogz(0);	
+	  gStyle->SetOptLogz(1);	
 	  pbmatcombo[k][j]->Divide(4,2);
 	
 	  pbcombo[k][j]->cd();
-	  gStyle->SetOptLogy();
+	  gStyle->SetOptLogy(1);
 	  gStyle->SetOptLogx(0);
 	  gStyle->SetOptLogz(0);
 	  pbcombo[k][j]->Divide(6,4);
