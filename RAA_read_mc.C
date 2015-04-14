@@ -786,6 +786,7 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
         //double scale = (double)(xsection[pthatBin-1]-xsection[pthatBin])/entries[h];
 	
        
+		if(!data[k][h]->pcollisionEventSelection) continue; //COMMENTED OUT Oct 13 2014
 		//if(!data[k][h]->pcollisionEventSelection || !data[k][h]->pHBHENoiseFilterpHBHENoiseFilter) continue; //COMMENTED OUT Oct 13 2014
 		
         //int cBin = hCentMC[k]->FindBin(data[k][h]->bin)-1;//old function
@@ -805,6 +806,9 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
 	
         if(scale*weight_cent*weight_vz <=0 ) {
 	  cout<<"RED FLAG RED FLAG RED FLAG"<<endl;
+	  cout<<"scale = "<<scale<<endl;
+	  cout<<"weight cent = "<<weight_cent<<endl;
+	  cout<<"weight vz = "<<weight_vz<<endl;
 	  continue;
 	}
 	
@@ -846,7 +850,7 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
 	}
 	
 	//moved the cut here.
-	if ( data[k][h]->chargedMax[g]/data[k][h]->jtpt[g]<0.02) continue;
+	//if ( data[k][h]->chargedMax[g]/data[k][h]->jtpt[g]<0.02) continue;
 	
 	hPbPb_pthat_fine[k]->Fill(data[k][h]->pthat,weight_vz*scale);
 	hPbPb_pthat_fine_noScale[k]->Fill(data[k][h]->pthat);
@@ -884,7 +888,7 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
 		 //if ( data[k][h]->jtpt[g] <= 15 ) continue;
 		 if ( data[k][h]->jtpt[g] > 2.*data[k][h]->pthat) continue;
 		 //if ( data[k][h]->eMax[g] / sumCand < 0.8) continue; //added March 02 2015
-		 if ( data[k][h]->eMax[g]/data[k][h]->jtpt[g] > 0.6 || data[k][h]->chargedMax[g]/data[k][h]->jtpt[g] < 0.02) continue; //added 3/6/15
+		 //if ( data[k][h]->eMax[g]/data[k][h]->jtpt[g] > 0.6 || data[k][h]->chargedMax[g]/data[k][h]->jtpt[g] < 0.02) continue; //added 3/6/15
 		 // jet quality cuts here
 		 
 		 //if ( data[k][h]->neutralMax[g]/TMath::Max(data[h]->chargedSum[k],data[h]->neutralSum[k]) < 0.975)continue;
@@ -1449,7 +1453,6 @@ void RAA_read_mc(char *algo = "Pu", char *jet_type = "PF", char *intype = "mc"){
 	hpp_etadist[k]->Draw();
 	teta[k]->SaveAs(Form("/net/hisrv0001/home/obaron/CMSSW_5_3_20/drawfiles/output/hpp_etadist_%s_%s_R%d_made_%d.png",intype,algo,list_radius[k],date.GetDate()),"RECREATE");
 
-	
 	tphi[k]->cd();
 	hpp_phidist[k]->GetYaxis()->SetTitle("Event Fraction");
 	hpp_phidist[k]->GetXaxis()->SetTitle("#phi");
