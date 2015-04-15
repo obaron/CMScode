@@ -515,7 +515,7 @@ cout<<"histograms declared"<<endl;
 	  hData_Jet55_noCut_phi->Fill(pfphi_1,jet55_p_1);
  	  hData_Jet55_noCut_eta_cent[cBin]->Fill(pfeta_1,jet55_p_1);
 	  hData_Jet55_noCut_phi_cent[cBin]->Fill(pfphi_1,jet55_p_1); 
-      hData_Jet55_noCut_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1,jet55_p_1); //fill pteta
+      hData_Jet55_noCut_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1,jet55_p_1); //fill pteta
 	  
       if(calopt_1/pfpt_1 > 0.5 && calopt_1/pfpt_1 <= 0.85 && eMax_1/Sumcand < ((Float_t)18/7 *(Float_t)calopt_1/pfpt_1 - (Float_t)9/7)) {
 		  hData_Jet55_CutA->Fill(pfpt_1, jet55_p_1);
@@ -524,7 +524,7 @@ cout<<"histograms declared"<<endl;
  	  hData_Jet55_CutA_eta_cent[cBin]->Fill(pfeta_1,jet55_p_1);
 	  hData_Jet55_CutA_phi_cent[cBin]->Fill(pfphi_1,jet55_p_1); 
 	  hpbpb_TrgObj55[cBin]->Fill(pfpt_1, jet55_p_1);	  		  
-	  hData_Jet55_CutA_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1,jet55_p_1);
+	  hData_Jet55_CutA_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1,jet55_p_1);
 	  }
       if(calopt_1/pfpt_1 > 0.85) {
 		  hData_Jet55_CutA->Fill(pfpt_1, jet55_p_1);
@@ -533,7 +533,7 @@ cout<<"histograms declared"<<endl;
  	  hData_Jet55_CutA_eta_cent[cBin]->Fill(pfeta_1);
 	  hData_Jet55_CutA_phi_cent[cBin]->Fill(pfphi_1); 
 	  		  hpbpb_TrgObj55[cBin]->Fill(pfpt_1, jet55_p_1);
-	  hData_Jet55_CutA_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1,jet55_p_1);
+	  hData_Jet55_CutA_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1,jet55_p_1);
 	  }
       if(calopt_1/pfpt_1 <= 0.5 && eMax_1/Sumcand < 0.05) {
 		  hData_Jet55_CutA->Fill(pfpt_1, jet55_p_1);
@@ -542,7 +542,7 @@ cout<<"histograms declared"<<endl;
  	  hData_Jet55_CutA_eta_cent[cBin]->Fill(pfeta_1);
 	  hData_Jet55_CutA_phi_cent[cBin]->Fill(pfphi_1); 
 	  		  hpbpb_TrgObj55[cBin]->Fill(pfpt_1, jet55_p_1);
-	  hData_Jet55_CutA_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1,jet55_p_1);
+	  hData_Jet55_CutA_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1,jet55_p_1);
 	  }
 
       if(calopt_1/pfpt_1 <= 0.5 && eMax_1/Sumcand >= 0.05) {
@@ -560,7 +560,7 @@ cout<<"histograms declared"<<endl;
       hData_Jet65_noCut_phi->Fill(pfphi_1);
       hData_Jet65_noCut_eta_cent[cBin]->Fill(pfeta_1);
       hData_Jet65_noCut_phi_cent[cBin]->Fill(pfphi_1);
-	  hData_Jet65_noCut_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1);
+	  hData_Jet65_noCut_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1);
       	  
       if(calopt_1/pfpt_1 > 0.5 && calopt_1/pfpt_1 <= 0.85 && eMax_1/Sumcand < ((Float_t)18/7 *(Float_t)calopt_1/pfpt_1 - (Float_t)9/7)) {
 	  hData_Jet65_CutA->Fill(pfpt_1);
@@ -570,7 +570,7 @@ cout<<"histograms declared"<<endl;
       hData_Jet65_CutA_phi->Fill(pfphi_1);
       hData_Jet65_CutA_eta_cent[cBin]->Fill(pfeta_1);
       hData_Jet65_CutA_phi_cent[cBin]->Fill(pfphi_1);
-	  hData_Jet65_CutA_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1);
+	  hData_Jet65_CutA_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1);
 	  }
       
 	  if(calopt_1/pfpt_1 > 0.85) {
@@ -581,7 +581,7 @@ cout<<"histograms declared"<<endl;
       hData_Jet65_CutA_phi->Fill(pfphi_1);
       hData_Jet65_CutA_eta_cent[cBin]->Fill(pfeta_1);
       hData_Jet65_CutA_phi_cent[cBin]->Fill(pfphi_1);
-	  hData_Jet65_CutA_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1);
+	  hData_Jet65_CutA_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1);
 	  }
 	  
       if(calopt_1/pfpt_1 <= 0.5 && eMax_1/Sumcand < 0.05) {
@@ -592,7 +592,7 @@ cout<<"histograms declared"<<endl;
       hData_Jet65_CutA_phi->Fill(pfphi_1);
       hData_Jet65_CutA_eta_cent[cBin]->Fill(pfeta_1);
       hData_Jet65_CutA_phi_cent[cBin]->Fill(pfphi_1);
-	  hData_Jet65_CutA_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1);
+	  hData_Jet65_CutA_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1);
 	  }
 	  
       if(calopt_1/pfpt_1 <= 0.5 && eMax_1/Sumcand >= 0.05) {
@@ -610,7 +610,7 @@ cout<<"histograms declared"<<endl;
       hData_Jet80_noCut_phi->Fill(pfphi_1);
       hData_Jet80_noCut_eta_cent[cBin]->Fill(pfeta_1);
       hData_Jet80_noCut_phi_cent[cBin]->Fill(pfphi_1);
-      hData_Jet80_noCut_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1);
+      hData_Jet80_noCut_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1);
 			
       if(calopt_1/pfpt_1 > 0.5 && calopt_1/pfpt_1 <= 0.85 && eMax_1/Sumcand < ((Float_t)18/7 *(Float_t)calopt_1/pfpt_1 - (Float_t)9/7)) {
 		  hData_Jet80_CutA->Fill(pfpt_1);
@@ -620,7 +620,7 @@ cout<<"histograms declared"<<endl;
       hData_Jet80_CutA_phi->Fill(pfphi_1);
       hData_Jet80_CutA_eta_cent[cBin]->Fill(pfeta_1);
       hData_Jet80_CutA_phi_cent[cBin]->Fill(pfphi_1);
-	  hData_Jet80_CutA_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1);
+	  hData_Jet80_CutA_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1);
 	  }
       
 	  if(calopt_1/pfpt_1 > 0.85) {
@@ -631,7 +631,7 @@ cout<<"histograms declared"<<endl;
       hData_Jet80_CutA_phi->Fill(pfphi_1);
       hData_Jet80_CutA_eta_cent[cBin]->Fill(pfeta_1);
       hData_Jet80_CutA_phi_cent[cBin]->Fill(pfphi_1);
-	  hData_Jet80_CutA_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1);
+	  hData_Jet80_CutA_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1);
 	  }
       
 	  if(calopt_1/pfpt_1 <= 0.5 && eMax_1/Sumcand < 0.05) {
@@ -642,7 +642,7 @@ cout<<"histograms declared"<<endl;
       hData_Jet80_CutA_phi->Fill(pfphi_1);
       hData_Jet80_CutA_eta_cent[cBin]->Fill(pfeta_1);
       hData_Jet80_CutA_phi_cent[cBin]->Fill(pfphi_1);
-	  hData_Jet80_CutA_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1);
+	  hData_Jet80_CutA_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1);
 	  }
 		  
       if(calopt_1/pfpt_1 <= 0.5 && eMax_1/Sumcand >= 0.05) hData_Jet80_CutA_rej->Fill(pfpt_1);
@@ -683,7 +683,7 @@ cout<<"histograms declared"<<endl;
 	  hData_Jet55_noCut_phi->Fill(pfphi_1, jet55_p_1); //added prescale here
  	  hData_Jet55_noCut_eta_cent[cBin]->Fill(pfeta_1, jet55_p_1); //added prescale here
 	  hData_Jet55_noCut_phi_cent[cBin]->Fill(pfphi_1, jet55_p_1); //added prescale here
-	  hData_Jet55_noCut_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1,jet55_p_1);
+	  hData_Jet55_noCut_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1,jet55_p_1);
 	  
       if(eMax_1/Sumcand < 0.05 ){
         hpbpb_TrgObj55[cBin]->Fill(pfpt_1,jet55_p_1);
@@ -692,7 +692,7 @@ cout<<"histograms declared"<<endl;
 	  hData_Jet55_CutA_phi->Fill(pfphi_1,jet55_p_1);
  	  hData_Jet55_CutA_eta_cent[cBin]->Fill(pfeta_1,jet55_p_1);
 	  hData_Jet55_CutA_phi_cent[cBin]->Fill(pfphi_1,jet55_p_1); 
-	  hData_Jet55_CutA_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1,jet55_p_1);
+	  hData_Jet55_CutA_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1,jet55_p_1);
 	  }
       else hData_unmatched_Jet55_CutA_rej->Fill(pfpt_1, jet55_p_1);
       
@@ -705,7 +705,7 @@ cout<<"histograms declared"<<endl;
       hData_Jet65_noCut_phi->Fill(pfphi_1);
       hData_Jet65_noCut_eta_cent[cBin]->Fill(pfeta_1);
       hData_Jet65_noCut_phi_cent[cBin]->Fill(pfphi_1);
-	  hData_Jet65_noCut_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1);
+	  hData_Jet65_noCut_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1);
       if(eMax_1/Sumcand < 0.05  ){
          hpbpb_TrgObj65[cBin]->Fill(pfpt_1);
 	     hData_unmatched_Jet65_CutA->Fill(pfpt_1);
@@ -713,7 +713,7 @@ cout<<"histograms declared"<<endl;
       hData_Jet65_CutA_phi->Fill(pfphi_1);
       hData_Jet65_CutA_eta_cent[cBin]->Fill(pfeta_1);
       hData_Jet65_CutA_phi_cent[cBin]->Fill(pfphi_1);
-	  hData_Jet65_CutA_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1);
+	  hData_Jet65_CutA_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1);
 	  }
       else hData_unmatched_Jet65_CutA_rej->Fill(pfpt_1);
       
@@ -726,7 +726,7 @@ cout<<"histograms declared"<<endl;
       hData_Jet80_noCut_phi->Fill(pfphi_1);
       hData_Jet80_noCut_eta_cent[cBin]->Fill(pfeta_1);
       hData_Jet80_noCut_phi_cent[cBin]->Fill(pfphi_1);
-      hData_Jet80_noCut_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1);
+      hData_Jet80_noCut_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1);
       if(eMax_1/Sumcand < 0.05  ){
           hpbpb_TrgObj80[cBin]->Fill(pfpt_1);
 	      hData_unmatched_Jet80_CutA->Fill(pfpt_1);
@@ -734,7 +734,7 @@ cout<<"histograms declared"<<endl;
       hData_Jet80_CutA_phi->Fill(pfphi_1);
       hData_Jet80_CutA_eta_cent[cBin]->Fill(pfeta_1);
       hData_Jet80_CutA_phi_cent[cBin]->Fill(pfphi_1);	      
-	  hData_Jet80_CutA_JetpTeta[cBin]->Fill(pfpt_1,pfeta_1);
+	  hData_Jet80_CutA_JetpTeta[cBin]->Fill(pfeta_1,pfpt_1);
 	  }
       else hData_unmatched_Jet80_CutA_rej->Fill(pfpt_1);
       
@@ -1170,21 +1170,21 @@ cout<<"histograms declared"<<endl;
 	cpteta_noCut[i]->cd();
 	cpteta_noCut[i]->Divide(3,1);
 	cpteta_noCut[i]->cd(1);
-	hData_Jet55_noCut_JetpTeta[i]->Draw();
+	hData_Jet55_noCut_JetpTeta[i]->Draw("colz");
 	cpteta_noCut[i]->cd(2);
-	hData_Jet65_noCut_JetpTeta[i]->Draw();
+	hData_Jet65_noCut_JetpTeta[i]->Draw("colz");
 	cpteta_noCut[i]->cd(3);
-	hData_Jet80_noCut_JetpTeta[i]->Draw();
+	hData_Jet80_noCut_JetpTeta[i]->Draw("colz");
 	cpteta_noCut[i]->SaveAs(Form("hpbpb_pTeta_noCut_R%d_n20_eta_p20_cent%d.pdf",radius,i),"RECREATE");
 	
 	cpteta_CutA[i]->cd();
 	cpteta_CutA[i]->Divide(3,1);
 	cpteta_CutA[i]->cd(1);
-	hData_Jet55_CutA_JetpTeta[i]->Draw();
+	hData_Jet55_CutA_JetpTeta[i]->Draw("colz");
 	cpteta_CutA[i]->cd(2);
-	hData_Jet65_CutA_JetpTeta[i]->Draw();
+	hData_Jet65_CutA_JetpTeta[i]->Draw("colz");
 	cpteta_CutA[i]->cd(3);
-	hData_Jet80_CutA_JetpTeta[i]->Draw();
+	hData_Jet80_CutA_JetpTeta[i]->Draw("colz");
 	cpteta_CutA[i]->SaveAs(Form("hpbpb_pTeta_CutA_R%d_n20_eta_p20_cent%d.pdf",radius,i),"RECREATE");
 	
 	
