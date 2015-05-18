@@ -55,6 +55,9 @@ int findBin(int bin)
 
 using namespace std;
 
+//static const int stdarr = 6;
+static const int stdarray[6] = {1,2,3,4,5,6};
+
 // Run with: 
 // root -l RAA_plot_CutA_BasicPlots.C+
 // gets a few warnings but runs ok
@@ -69,8 +72,12 @@ void RAA_plot_CutA_BasicPlots(){
   // if(calopt/pfpt > 0.5 && calopt/pfpt <= 0.85 && eMax/Sumcand < (18/7 *(Float_t)calopt_1/pfpt_1 - 9/7)) ) hGood->Fill();
   // if(calopt/pfpt > 0.85 & eMax/Sumcand > 0.9) hGood->Fill();
   
+  Float_t ptCutMC = 60;
+  Float_t ptCutData = 60;
+  Float_t ptCutCentralData = 60;
+  Float_t ptCutCentralMC = 60;
   
-  Int_t radius = 3;
+  Int_t radius = 4;
   char * etaWidth = (char*)"n20_eta_p20";
   TFile * fData, * fMC; 
 
@@ -264,10 +271,12 @@ void RAA_plot_CutA_BasicPlots(){
   TCanvas  * cPbPb_pteta_CutA[nbins_cent];
   TCanvas  * cMC_pteta_noCut[nbins_cent];
   TCanvas  * cMC_pteta_CutA[nbins_cent];
-  
-  TCanvas  * cPbPb_pteta80_noCut[nbins_cent];
-  TCanvas  * cPbPb_pteta80_CutA[nbins_cent];
-  
+
+  TCanvas * cPbPb_pteta80_noCut = new TCanvas(Form("hData_noCut_pTeta80_R%d_allcent",radius),Form("hData_noCut_pTeta80_R%d_allcent",radius),1500,1400);
+  TCanvas * cPbPb_pteta80_CutA = new TCanvas(Form("hData_noCut_pTeta80_R%d_allcent",radius),Form("hData_noCut_pTeta80_R%d_allcent",radius),1500,1400);  
+  TCanvas * cMC_pteta80_noCut = new TCanvas(Form("hMC_noCut_pTeta80_R%d_allcent",radius),Form("hMC_noCut_pTeta80_R%d_allcent",radius),1500,1400);
+  TCanvas * cMC_pteta80_CutA = new TCanvas(Form("hMC_CutA_pTeta80_R%d_allcent",radius),Form("hMC_CutA_pTeta80_R%d_allcent",radius),1500,1400);
+ 
   TCanvas * cphieta_noCut[nbins_cent];
   TCanvas * cphieta_CutA[nbins_cent];
   
@@ -332,41 +341,41 @@ cout<<"histograms declared"<<endl;
     hpbpb_Jet55_reco[i] = new TH1F(Form("hpbpb_Jet55_reco_R%d_%s_cent%d",radius,etaWidth,i),Form("reco jtpt from Jet55 && !Jet65 && !Jet80 trigger R%d %s %2.0f - %2.0f cent",radius,etaWidth,5*boundaries_cent[i],5*boundaries_cent[i+1]),1000,0,1000);
 // new plots
 
-    hData_noCut_eta_cent[i] = new TH1F(Form("hData_noCut_eta_R%d_cent%d",radius,i),Form("Data no cuts eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-    hData_CutA_eta_cent[i] = new TH1F(Form("hData_CutA_eta_R%d_cent%d",radius,i),Form("Data CutA eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hData_Jet55_noCut_eta_cent[i] = new TH1F(Form("hData_Jet55_noCut_eta_R%d_cent%d",radius,i),Form("Data Jet55 no cuts eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hData_Jet55_CutA_eta_cent[i] = new TH1F(Form("hData_Jet55_CutA_eta_R%d_cent%d",radius,i),Form("Data Jet55 CutA eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hData_Jet65_noCut_eta_cent[i] = new TH1F(Form("hData_Jet65_noCut_eta_R%d_cent%d",radius,i),Form("Data Jet65 no cuts eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hData_Jet65_CutA_eta_cent[i] = new TH1F(Form("hData_Jet65_CutA_eta_R%d_cent%d",radius,i),Form("Data Jet65 CutA eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hData_Jet80_noCut_eta_cent[i] = new TH1F(Form("hData_Jet80_noCut_eta_R%d_cent%d",radius,i),Form("Data Jet80 no cuts eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hData_Jet80_CutA_eta_cent[i] = new TH1F(Form("hData_Jet80_CutA_eta_R%d_cent%d",radius,i),Form("Data Jet80 CutA eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
+    hData_noCut_eta_cent[i] = new TH1F(Form("hData_noCut_eta_R%d_cent%d",radius,i),Form("Data no cuts eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+    hData_CutA_eta_cent[i] = new TH1F(Form("hData_CutA_eta_R%d_cent%d",radius,i),Form("Data CutA eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hData_Jet55_noCut_eta_cent[i] = new TH1F(Form("hData_Jet55_noCut_eta_R%d_cent%d",radius,i),Form("Data Jet55 no cuts eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hData_Jet55_CutA_eta_cent[i] = new TH1F(Form("hData_Jet55_CutA_eta_R%d_cent%d",radius,i),Form("Data Jet55 CutA eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hData_Jet65_noCut_eta_cent[i] = new TH1F(Form("hData_Jet65_noCut_eta_R%d_cent%d",radius,i),Form("Data Jet65 no cuts eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hData_Jet65_CutA_eta_cent[i] = new TH1F(Form("hData_Jet65_CutA_eta_R%d_cent%d",radius,i),Form("Data Jet65 CutA eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hData_Jet80_noCut_eta_cent[i] = new TH1F(Form("hData_Jet80_noCut_eta_R%d_cent%d",radius,i),Form("Data Jet80 no cuts eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hData_Jet80_CutA_eta_cent[i] = new TH1F(Form("hData_Jet80_CutA_eta_R%d_cent%d",radius,i),Form("Data Jet80 CutA eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
 
-    hData_noCut_phi_cent[i] = new TH1F(Form("hData_noCut_phi_R%d_cent%d",radius,i),Form("Data no cuts phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-    hData_CutA_phi_cent[i] = new TH1F(Form("hData_CutA_phi_R%d_cent%d",radius,i),Form("Data CutA phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hData_Jet55_noCut_phi_cent[i] = new TH1F(Form("hData_Jet55_noCut_phi_R%d_cent%d",radius,i),Form("Data Jet55 no cuts phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hData_Jet55_CutA_phi_cent[i] = new TH1F(Form("hData_Jet55_CutA_phi_R%d_cent%d",radius,i),Form("Data Jet55 CutA phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hData_Jet65_noCut_phi_cent[i] = new TH1F(Form("hData_Jet65_noCut_phi_R%d_cent%d",radius,i),Form("Data Jet65 no cuts phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hData_Jet65_CutA_phi_cent[i] = new TH1F(Form("hData_Jet65_CutA_phi_R%d_cent%d",radius,i),Form("Data Jet65 CutA phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hData_Jet80_noCut_phi_cent[i] = new TH1F(Form("hData_Jet80_noCut_phi_R%d_cent%d",radius,i),Form("Data Jet80 no cuts phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hData_Jet80_CutA_phi_cent[i] = new TH1F(Form("hData_Jet80_CutA_phi_R%d_cent%d",radius,i),Form("Data Jet80 CutA phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
+    hData_noCut_phi_cent[i] = new TH1F(Form("hData_noCut_phi_R%d_cent%d",radius,i),Form("Data no cuts phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+    hData_CutA_phi_cent[i] = new TH1F(Form("hData_CutA_phi_R%d_cent%d",radius,i),Form("Data CutA phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hData_Jet55_noCut_phi_cent[i] = new TH1F(Form("hData_Jet55_noCut_phi_R%d_cent%d",radius,i),Form("Data Jet55 no cuts phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hData_Jet55_CutA_phi_cent[i] = new TH1F(Form("hData_Jet55_CutA_phi_R%d_cent%d",radius,i),Form("Data Jet55 CutA phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hData_Jet65_noCut_phi_cent[i] = new TH1F(Form("hData_Jet65_noCut_phi_R%d_cent%d",radius,i),Form("Data Jet65 no cuts phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hData_Jet65_CutA_phi_cent[i] = new TH1F(Form("hData_Jet65_CutA_phi_R%d_cent%d",radius,i),Form("Data Jet65 CutA phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hData_Jet80_noCut_phi_cent[i] = new TH1F(Form("hData_Jet80_noCut_phi_R%d_cent%d",radius,i),Form("Data Jet80 no cuts phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hData_Jet80_CutA_phi_cent[i] = new TH1F(Form("hData_Jet80_CutA_phi_R%d_cent%d",radius,i),Form("Data Jet80 CutA phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
 
-    hMC_noCut_eta_cent[i] = new TH1F(Form("hMC_noCut_eta_R%d_cent%d",radius,i),Form("MC no cuts eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-    hMC_CutA_eta_cent[i] = new TH1F(Form("hMC_CutA_eta_R%d_cent%d",radius,i),Form("MC CutA eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hMC_Jet55_noCut_eta_cent[i] = new TH1F(Form("hMC_Jet55_noCut_eta_R%d_cent%d",radius,i),Form("MC Jet55 no cuts eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hMC_Jet55_CutA_eta_cent[i] = new TH1F(Form("hMC_Jet55_CutA_eta_R%d_cent%d",radius,i),Form("MC Jet55 CutA eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hMC_Jet65_noCut_eta_cent[i] = new TH1F(Form("hMC_Jet65_noCut_eta_R%d_cent%d",radius,i),Form("MC Jet65 no cuts eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hMC_Jet65_CutA_eta_cent[i] = new TH1F(Form("hMC_Jet65_CutA_eta_R%d_cent%d",radius,i),Form("MC Jet65 CutA eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hMC_Jet80_noCut_eta_cent[i] = new TH1F(Form("hMC_Jet80_noCut_eta_R%d_cent%d",radius,i),Form("MC Jet80 no cuts eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hMC_Jet80_CutA_eta_cent[i] = new TH1F(Form("hMC_Jet80_CutA_eta_R%d_cent%d",radius,i),Form("MC Jet80 CutA eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
+    hMC_noCut_eta_cent[i] = new TH1F(Form("hMC_noCut_eta_R%d_cent%d",radius,i),Form("MC no cuts eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+    hMC_CutA_eta_cent[i] = new TH1F(Form("hMC_CutA_eta_R%d_cent%d",radius,i),Form("MC CutA eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hMC_Jet55_noCut_eta_cent[i] = new TH1F(Form("hMC_Jet55_noCut_eta_R%d_cent%d",radius,i),Form("MC Jet55 no cuts eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hMC_Jet55_CutA_eta_cent[i] = new TH1F(Form("hMC_Jet55_CutA_eta_R%d_cent%d",radius,i),Form("MC Jet55 CutA eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hMC_Jet65_noCut_eta_cent[i] = new TH1F(Form("hMC_Jet65_noCut_eta_R%d_cent%d",radius,i),Form("MC Jet65 no cuts eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hMC_Jet65_CutA_eta_cent[i] = new TH1F(Form("hMC_Jet65_CutA_eta_R%d_cent%d",radius,i),Form("MC Jet65 CutA eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hMC_Jet80_noCut_eta_cent[i] = new TH1F(Form("hMC_Jet80_noCut_eta_R%d_cent%d",radius,i),Form("MC Jet80 no cuts eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
+   hMC_Jet80_CutA_eta_cent[i] = new TH1F(Form("hMC_Jet80_CutA_eta_R%d_cent%d",radius,i),Form("MC Jet80 CutA eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-2.5,2.5);
 
-    hMC_noCut_phi_cent[i] = new TH1F(Form("hMC_noCut_phi_R%d_cent%d",radius,i),Form("MC no cuts phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-    hMC_CutA_phi_cent[i] = new TH1F(Form("hMC_CutA_phi_R%d_cent%d",radius,i),Form("MC CutA phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hMC_Jet55_noCut_phi_cent[i] = new TH1F(Form("hMC_Jet55_noCut_phi_R%d_cent%d",radius,i),Form("MC Jet55 no cuts phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hMC_Jet55_CutA_phi_cent[i] = new TH1F(Form("hMC_Jet55_CutA_phi_R%d_cent%d",radius,i),Form("MC Jet55 CutA phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hMC_Jet65_noCut_phi_cent[i] = new TH1F(Form("hMC_Jet65_noCut_phi_R%d_cent%d",radius,i),Form("MC Jet65 no cuts phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hMC_Jet65_CutA_phi_cent[i] = new TH1F(Form("hMC_Jet65_CutA_phi_R%d_cent%d",radius,i),Form("MC Jet65 CutA phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hMC_Jet80_noCut_phi_cent[i] = new TH1F(Form("hMC_Jet80_noCut_phi_R%d_cent%d",radius,i),Form("MC Jet80 no cuts phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
-   hMC_Jet80_CutA_phi_cent[i] = new TH1F(Form("hMC_Jet80_CutA_phi_R%d_cent%d",radius,i),Form("MC Jet80 CutA phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5);
+    hMC_noCut_phi_cent[i] = new TH1F(Form("hMC_noCut_phi_R%d_cent%d",radius,i),Form("MC no cuts phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-pi,pi);
+    hMC_CutA_phi_cent[i] = new TH1F(Form("hMC_CutA_phi_R%d_cent%d",radius,i),Form("MC CutA phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-pi,pi);
+   hMC_Jet55_noCut_phi_cent[i] = new TH1F(Form("hMC_Jet55_noCut_phi_R%d_cent%d",radius,i),Form("MC Jet55 no cuts phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-pi,pi);
+   hMC_Jet55_CutA_phi_cent[i] = new TH1F(Form("hMC_Jet55_CutA_phi_R%d_cent%d",radius,i),Form("MC Jet55 CutA phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-pi,pi);
+   hMC_Jet65_noCut_phi_cent[i] = new TH1F(Form("hMC_Jet65_noCut_phi_R%d_cent%d",radius,i),Form("MC Jet65 no cuts phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-pi,pi);
+   hMC_Jet65_CutA_phi_cent[i] = new TH1F(Form("hMC_Jet65_CutA_phi_R%d_cent%d",radius,i),Form("MC Jet65 CutA phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-pi,pi);
+   hMC_Jet80_noCut_phi_cent[i] = new TH1F(Form("hMC_Jet80_noCut_phi_R%d_cent%d",radius,i),Form("MC Jet80 no cuts phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-pi,pi);
+   hMC_Jet80_CutA_phi_cent[i] = new TH1F(Form("hMC_Jet80_CutA_phi_R%d_cent%d",radius,i),Form("MC Jet80 CutA phi R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),30,-pi,pi);
 
    hData_Jet55_noCut_JetpTeta[i] = new TH2F(Form("hData_Jet55_noCut_pTeta_R%d_cent%d",radius,i),Form("Data Jet55 no cuts pT-eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5,1000,0,400);   
    hData_Jet55_CutA_JetpTeta[i] = new TH2F(Form("hData_Jet55_CutA_pTeta_R%d_cent%d",radius,i),Form("Data Jet55 CutA pT-eta R%d %2.0f - %2.0f cent",radius,5*(float)boundaries_cent[i],5*(float)boundaries_cent[i+1]),100,-2.5,2.5,1000,0,400);
@@ -392,7 +401,6 @@ cout<<"histograms declared"<<endl;
    cPbPb_pteta_CutA[i] = new TCanvas(Form("hData_CutA_pTeta_R%d_cent%d",radius,i),Form("hData_CutA_pTeta_R%d_cent%d",radius,i),1500,600);
    cMC_pteta_noCut[i] = new TCanvas(Form("hMC_noCut_pTeta_R%d_cent%d",radius,i),Form("hMC_noCut_pTeta_R%d_cent%d",radius,i),1500,600);
    cMC_pteta_CutA[i] = new TCanvas(Form("hMC_CutA_pTeta_R%d_cent%d",radius,i),Form("hMC_CutA_pTeta_R%d_cent%d",radius,i),1500,600);
-	//cPbPb_pteta80_noCut = new TCancas
 	
   }// centrality bin loop
   
@@ -508,6 +516,9 @@ cout<<"histograms declared"<<endl;
     
     Float_t Sumcand = chSum_1 + phSum_1 + neSum_1 + muSum_1;
 
+if(pfpt_1>=ptCutData){
+   if(cBin==0 && pfpt_1<ptCutCentralData) { continue; } // cut data at 100 GeV for 0-5% central
+   
    hData_noCut_eta->Fill(pfeta_1); //nocut: no prescale
    hData_noCut_phi->Fill(pfphi_1);
    hData_noCut_eta_cent[cBin]->Fill(pfeta_1);
@@ -675,7 +686,7 @@ cout<<"histograms declared"<<endl;
       if(calopt_1/pfpt_1 > 0.5 && calopt_1/pfpt_1 <= 0.85 && eMax_1/Sumcand >= ((Float_t)18/7 *(Float_t)calopt_1/pfpt_1 - (Float_t)9/7)) hData_Jet80_CutA_rej->Fill(pfpt_1);
       
     }
-    
+	} //end ptCutData
   }// data ntuple loop
 
   // data unmatched loop:
@@ -689,6 +700,9 @@ cout<<"histograms declared"<<endl;
     Int_t cBin = findBin(hiBin_1);
     if(cBin == -1 || cBin >= nbins_cent) continue;
     
+ if(pfpt_1>=ptCutData){
+   if(cBin==0 && pfpt_1<ptCutCentralData) { continue; } // cut data at 100 GeV for 0-5% central    
+   
     Float_t Sumcand = chSum_1 + phSum_1 + neSum_1 + muSum_1;
    hData_noCut_eta->Fill(pfeta_1);
    hData_noCut_phi->Fill(pfphi_1);
@@ -765,7 +779,7 @@ cout<<"histograms declared"<<endl;
       else hData_unmatched_Jet80_CutA_rej->Fill(pfpt_1);
       
     }
-    
+	} //end check pT
   }// data ntuple loop
 
   entries = MC_matched->GetEntries();
@@ -783,6 +797,9 @@ cout<<"histograms declared"<<endl;
     Int_t cBin = findBin(hiBin_2);
     if(cBin == -1 || cBin >= nbins_cent) continue;
     
+ if(pfpt_2>=ptCutMC){
+   if(cBin==0 && pfpt_2<ptCutCentralMC) { continue; } // cut data at 100 GeV for 0-5% central   
+   
    hMC_noCut_eta->Fill(pfeta_2,weight);
    hMC_noCut_phi->Fill(pfphi_2,weight);
    hMC_noCut_eta_cent[cBin]->Fill(pfeta_2,weight);
@@ -1032,7 +1049,7 @@ cout<<"histograms declared"<<endl;
       if(calopt_2/pfpt_2 > 0.5 && calopt_2/pfpt_2 <= 0.85 && eMax_2/Sumcand >= ((Float_t)18/7 *(Float_t)calopt_2/pfpt_2 - (Float_t)9/7)) hMC_Jet80_CutA_rej->Fill(pfrefpt_2, weight);
 
     }
-    
+ } //loop end check pT
     
   }// mc ntuple loop
 
@@ -1053,6 +1070,8 @@ cout<<"histograms declared"<<endl;
     
     Float_t Sumcand = chSum_2 + phSum_2 + neSum_2 + muSum_2;
 
+ if(pfpt_2>=ptCutMC){
+   if(cBin==0 && pfpt_2<ptCutCentralMC) { continue; } // cut data at 100 GeV for 0-5% central 
    hMC_noCut_eta->Fill(pfeta_2,weight);
    hMC_noCut_phi->Fill(pfphi_2,weight);
    hMC_noCut_eta_cent[cBin]->Fill(pfeta_2,weight);
@@ -1162,7 +1181,7 @@ cout<<"histograms declared"<<endl;
       else hMC_unmatched_Jet80_CutA_rej->Fill(pfrefpt_2, weight);
       
     }
-    
+ }//end pT cut check MC loop
     
   }// mc unmatched  ntuple loop
 
@@ -1258,6 +1277,7 @@ cout<<"histograms declared"<<endl;
 	hMC_Jet65_CutA_JetpTeta[i]->Write();
 	hMC_Jet80_noCut_JetpTeta[i]->Write();
 	hMC_Jet80_CutA_JetpTeta[i]->Write();
+	
 	
 	cMC_pteta_noCut[i]->cd();
 	cMC_pteta_noCut[i]->Divide(3,1);
@@ -1804,6 +1824,8 @@ cJet65_CutEfficiency_Jet65->Close();
     cenoCut_eta_cent[i]->SaveAs(Form("NoCuts_eta_R%d_cent%d_MCweight.pdf",radius,i),"RECREATE");
     cenoCut_eta_cent[i]->Close();
   }
+ 
+  
   for(int i = 0 ; i < nbins_cent ; ++i){
 
     cenoCut_phi_cent[i] = new TCanvas(Form("cenoCut_phi_cent%d",i),"",800,600);
@@ -1885,4 +1907,17 @@ cJet65_CutEfficiency_Jet65->Close();
     ceCutA_phi_cent[i]->SaveAs(Form("CutA_R%d_phi_cent%d_MCweight.pdf",radius,i),"RECREATE");
     ceCutA_phi_cent[i]->Close();
   }
+  
+  cout<<"line 1892"<<endl;
+  cPbPb_pteta80_noCut->Divide(3,2);
+	  cPbPb_pteta80_noCut->SetLogz();
+	  cout<<"start stdarray loop"<<endl;
+	  
+  for(int i = 0 ; i < nbins_cent ; ++i){
+	cPbPb_pteta80_noCut->cd(stdarray[i])->SetLogz();
+	hData_Jet80_noCut_JetpTeta[i]->Draw("colz");
+	  }
+	  cPbPb_pteta80_noCut->SaveAs(Form("hData_pTeta80_noCut_R%d_n20_eta_p20_allcent.pdf",radius),"RECREATE");
+	  
+	  cout<<"finish macro"<<endl;
 }
