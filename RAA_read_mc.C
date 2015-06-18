@@ -216,7 +216,7 @@ public:
   int subid[1000];
   float vz;
   float pthat;
-  float hiNpix;
+  int hiNpix;
   int njets;
   int ngen;
   int bin;     
